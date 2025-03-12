@@ -1,1 +1,0 @@
-# taller_motos_odoo-v2
