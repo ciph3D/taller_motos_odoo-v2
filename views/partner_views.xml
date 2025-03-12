@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Extensión de vistas para res.partner -->
+    
+    <!-- Añadir botón de motos y pestaña en la vista de formulario de contactos -->
+    <record id="view_partner_form_inherit_taller_motos" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.taller.motos</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <!-- Añadir botón de estadísticas para motos -->
+            <div name="button_box" position="inside">
+                <button name="action_view_motos" type="object" class="oe_stat_button" icon="fa-motorcycle" 
+                        invisible="customer_rank == 0">
+                    <field name="moto_count" widget="statinfo" string="Motos"/>
+                </button>
+                <button name="schedule_meeting" type="object" class="oe_stat_button" icon="fa-calendar" 
+                        invisible="customer_rank == 0">
+                    <field name="meeting_count" widget="statinfo" string="Reuniones"/>
+                </button>
+            </div>
+            
+            <!-- Añadir pestaña de motos -->
+            <page name="sales_purchases" position="after">
+                <page name="motos" string="Motos" invisible="customer_rank == 0">
+                    <field name="moto_ids" context="{'default_cliente_id': id}">
+                        <list>
+                            <field name="marca"/>
+                            <field name="modelo"/>
+                            <field name="matricula"/>
+                            <field name="fecha_compra"/>
+                            <field name="kilometraje"/>
+                            <field name="state"/>
+                        </list>
+                    </field>
+                </page>
+            </page>
+        </field>
+    </record>
+</odoo>

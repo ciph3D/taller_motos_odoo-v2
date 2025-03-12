@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Regla de registro para motos -->
+    <record id="taller_moto_rule" model="ir.rule">
+        <field name="name">Moto multi-company</field>
+        <field name="model_id" ref="model_taller_moto"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|', ('cliente_id.company_id', '=', False), ('cliente_id.company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

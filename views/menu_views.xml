@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Menú principal -->
+    <menuitem id="menu_taller_root" 
+              name="Taller de Motos" 
+              web_icon="taller_motos,static/description/icon.png" 
+              sequence="10"/>
+    
+    <!-- Submenús -->
+    <menuitem id="menu_taller_motos" 
+              name="Motos" 
+              parent="menu_taller_root" 
+              sequence="10"/>
+    
+    <menuitem id="menu_taller_reparaciones" 
+              name="Reparaciones" 
+              parent="menu_taller_root" 
+              sequence="20"/>
+    
+    <!-- Entradas de menú para acciones -->
+    <menuitem id="menu_taller_moto_action" 
+              name="Motos" 
+              parent="menu_taller_motos" 
+              action="action_taller_moto" 
+              sequence="10"/>
+    
+    <menuitem id="menu_taller_repair_action" 
+              name="Reparaciones" 
+              parent="menu_taller_reparaciones" 
+              action="project.open_view_project_all" 
+              sequence="10"/>
+    
+    <menuitem id="menu_taller_repair_stages" 
+              name="Etapas de reparación" 
+              parent="menu_taller_reparaciones" 
+              action="project.open_task_type_form" 
+              sequence="90" 
+              groups="base.group_no_one"/>
+</odoo>

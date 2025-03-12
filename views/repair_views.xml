@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Extensión de vistas para project.project (reparaciones) -->
+    
+    <!-- Formulario de proyecto extendido para reparaciones -->
+    <record id="view_project_form_inherit_repair" model="ir.ui.view">
+        <field name="name">project.project.form.inherit.repair</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <!-- Modificar botones de acción -->
+            <div name="button_box" position="inside">
+                <button name="action_create_sale_order" type="object" class="oe_stat_button" icon="fa-file-text"
+                        invisible="sale_order_id != False" string="Crear Presupuesto"/>
+                <button name="action_view_sale_order" type="object" class="oe_stat_button" icon="fa-file-text"
+                        invisible="sale_order_id == False" string="Ver Presupuesto"/>
+                <!-- Eliminamos completamente el botón de facturas -->
+                <button name="action_update_moto_kilometraje" type="object" class="oe_stat_button" icon="fa-refresh"
+                        invisible="moto_id == False" string="Actualizar Km"/>
+            </div>
+            
+            <!-- Resto de la vista permanece igual -->
+            <field name="name" position="after">
+                <h1 class="o_row">
+                    <field name="moto_id" domain="[('cliente_id', '=', partner_id)]"
+                           options="{'no_create': True}" placeholder="Seleccione una moto..."/>
+                </h1>
+            </field>
+            
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="kilometraje_entrada"/>
+            </xpath>
+            
+            <xpath expr="//notebook" position="inside">
+                <page string="Información de reparación" name="repair_info">
+                    <group>
+                        <group>
+                            <field name="fecha_entrada"/>
+                            <field name="fecha_salida"/>
+                        </group>
+                        <group>
+                            <field name="sale_order_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Síntomas" name="symptoms">
+                            <field name="sintomas" placeholder="Describa los síntomas reportados por el cliente..."/>
+                        </page>
+                        <page string="Diagnóstico" name="diagnosis">
+                            <field name="diagnostico" placeholder="Registre el diagnóstico técnico..."/>
+                        </page>
+                        <page string="Trabajo Realizado" name="work_done">
+                            <field name="trabajo_realizado" placeholder="Describa el trabajo realizado..."/>
+                        </page>
+                    </notebook>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
