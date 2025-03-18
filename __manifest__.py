@@ -23,6 +23,7 @@
         'views/moto_views.xml',
         'views/repair_views.xml',
         'views/menu_views.xml',
+        'report/repair_reports.xml',
     ],
     'uninstall_hook': 'uninstall_hook',  # Añadimos este hook
     'application': True,

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Definir el informe -->
+        <record id="report_repair_order" model="ir.actions.report">
+            <field name="name">Hoja de Trabajo</field>
+            <field name="model">project.project</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">taller_motos.report_repair_order_template</field>
+            <field name="report_file">taller_motos.report_repair_order_template</field>
+            <field name="print_report_name">'Hoja de Trabajo - %s' % (object.name)</field>
+            <field name="binding_model_id" ref="model_project_project"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <!-- Plantilla QWeb para el informe -->
+        <template id="report_repair_order_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <div class="row">
+                                <div class="col-4">
+                                    <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="max-height: 100px;" alt="Logo"/>
+                                </div>
+                                <div class="col-4 text-center">
+                                    <h2>HOJA DE TRABAJO</h2>
+                                </div>
+                                <div class="col-4">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <strong>Nº DE LLAVE</strong>
+                                        </div>
+                                        <div class="col-6">
+                                            <span t-field="o.moto_id.numero_llave" t-options="{'widget': 'text'}" style="color: #e01e69; font-weight: bold;"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <strong>FECHA DE ENTRADA</strong>
+                                        </div>
+                                        <div class="col-6">
+                                            <span t-field="o.fecha_entrada"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <strong>FECHA PREVISTA DE ENTREGA</strong>
+                                        </div>
+                                        <div class="col-6">
+                                            <span t-field="o.fecha_prevista_entrega"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h4 class="mt-4">DATOS DEL CLIENTE</h4>
+                            <div class="row">
+                                <div class="col-6">
+                                    <table class="table table-sm table-bordered">
+                                        <tr>
+                                            <td><strong>NOMBRE</strong></td>
+                                            <td colspan="3"><span t-field="o.partner_id.name"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>N.I.F./C.I.F.</strong></td>
+                                            <td><span t-field="o.partner_id.vat"/></td>
+                                            <td><strong>CLIENTE</strong></td>
+                                            <td><span t-field="o.partner_id.id"/></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-6">
+                                    <table class="table table-sm table-bordered">
+                                        <tr>
+                                            <td><strong>DOMICILIO</strong></td>
+                                            <td><span t-field="o.partner_id.street"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>POBLACIÓN</strong></td>
+                                            <td><span t-field="o.partner_id.city"/></td>
+                                            <td><strong>COD. POSTAL</strong></td>
+                                            <td><span t-field="o.partner_id.zip"/></td>
+                                            <td><strong>TELÉFONO</strong></td>
+                                            <td><span t-field="o.partner_id.phone"/></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="row mt-2">
+                                <div class="col-12">
+                                    <table class="table table-sm table-bordered">
+                                        <tr>
+                                            <td width="15%"><strong>MARCA</strong></td>
+                                            <td width="15%"><span t-field="o.moto_id.marca"/></td>
+                                            <td width="15%"><strong>MODELO</strong></td>
+                                            <td width="15%"><span t-field="o.moto_id.modelo"/></td>
+                                            <td width="8%"><strong>C.C.</strong></td>
+                                            <td width="7%"></td>
+                                            <td width="8%"><strong>COLOR</strong></td>
+                                            <td width="7%"></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>MATRÍCULA</strong></td>
+                                            <td><span t-field="o.moto_id.matricula"/></td>
+                                            <td><strong>KILÓMETROS</strong></td>
+                                            <td><span t-field="o.kilometraje_entrada"/></td>
+                                            <td colspan="4"></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <h4 class="mt-3">SÍNTOMAS</h4>
+                            <table class="table table-sm table-bordered">
+                                <tr>
+                                    <td style="height: 80px;"><span t-field="o.sintomas"/></td>
+                                </tr>
+                            </table>
+
+                            <h4 class="mt-3">TRABAJOS A REALIZAR</h4>
+                            <table class="table table-sm table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th width="10%">CANTIDAD</th>
+                                        <th width="60%">TRABAJOS A REALIZAR</th>
+                                        <th width="15%">HORAS</th>
+                                        <th width="15%">IMPORTE</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="height: 200px;">
+                                        <td></td>
+                                        <td><span t-field="o.trabajo_realizado"/></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2"></td>
+                                        <td><strong>TOTAL</strong></td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            
+                            <p class="mt-3"><strong>PRECIO SIN IVA</strong></p>
+
+                            <p class="mt-3">Con mi firma, declaro haber leído, comprendido y aceptado las Condiciones Generales
+                            de la Orden de Trabajo y la cláusula de Protección de Datos, expuestas en el reverso de
+                            esta hoja.</p>
+
+                            <div class="row mt-4">
+                                <div class="col-6">
+                                    <div class="border p-3" style="min-height: 100px;">
+                                        <strong>FIRMA:</strong><br/>
+                                        <img t-if="o.cliente_firma" t-att-src="image_data_uri(o.cliente_firma)" style="max-height: 80px;"/>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="mt-3">
+                                        <div t-if="o.solicita_presupuesto">
+                                            <span class="fa fa-check-square-o"/> Solicita presupuesto
+                                        </div>
+                                        <div t-else="">
+                                            <span class="fa fa-square-o"/> Solicita presupuesto
+                                        </div>
+                                        <div t-if="o.recoge_piezas">
+                                            <span class="fa fa-check-square-o"/> Recoge piezas sustituidas
+                                        </div>
+                                        <div t-else="">
+                                            <span class="fa fa-square-o"/> Recoge piezas sustituidas
+                                        </div>
+                                        <div t-if="o.avisar_telefono">
+                                            <span class="fa fa-check-square-o"/> Avisar por teléfono
+                                        </div>
+                                        <div t-else="">
+                                            <span class="fa fa-square-o"/> Avisar por teléfono
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

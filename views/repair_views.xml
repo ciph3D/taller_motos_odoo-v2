@@ -14,7 +14,6 @@
                         invisible="sale_order_id != False" string="Crear Presupuesto"/>
                 <button name="action_view_sale_order" type="object" class="oe_stat_button" icon="fa-file-text"
                         invisible="sale_order_id == False" string="Ver Presupuesto"/>
-                <!-- Eliminamos completamente el botón de facturas -->
                 <button name="action_update_moto_kilometraje" type="object" class="oe_stat_button" icon="fa-refresh"
                         invisible="moto_id == False" string="Actualizar Km"/>
             </div>
@@ -36,6 +35,7 @@
                     <group>
                         <group>
                             <field name="fecha_entrada"/>
+                            <field name="fecha_prevista_entrega"/>
                             <field name="fecha_salida"/>
                         </group>
                         <group>
@@ -53,6 +53,40 @@
                             <field name="trabajo_realizado" placeholder="Describa el trabajo realizado..."/>
                         </page>
                     </notebook>
+                </page>
+                <!-- Nueva página para la firma -->
+                <page string="Aceptación y firma" name="signature">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <group>
+                                <div class="mb-3">
+                                    <field name="cliente_acepta_condiciones"/>
+                                    <label for="cliente_acepta_condiciones" class="ms-2">Declaro haber leído, comprendido y aceptado las Condiciones Generales de la Orden de Trabajo y la cláusula de Protección de Datos</label>
+                                </div>
+                            </group>
+                            <group string="Opciones adicionales">
+                                <div class="row mt-2">
+                                    <div class="col-md-4">
+                                        <field name="solicita_presupuesto"/>
+                                        <label for="solicita_presupuesto" class="ms-2">Solicita presupuesto</label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <field name="recoge_piezas"/>
+                                        <label for="recoge_piezas" class="ms-2">Recoge piezas sustituidas</label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <field name="avisar_telefono"/>
+                                        <label for="avisar_telefono" class="ms-2">Avisar por teléfono</label>
+                                    </div>
+                                </div>
+                            </group>
+                        </div>
+                        <div class="col-md-6">
+                            <group string="Firma del cliente">
+                                <field name="cliente_firma" widget="signature" options="{'size': [0, 150]}"/>
+                            </group>
+                        </div>
+                    </div>
                 </page>
             </xpath>
         </field>

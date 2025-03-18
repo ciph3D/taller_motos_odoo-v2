@@ -3,7 +3,7 @@ from odoo import models, fields, api, _
 class Repair(models.Model):
     _inherit = 'project.project'
     
-    # Campos adicionales para reparaciones
+    # Campos básicos existentes
     moto_id = fields.Many2one('taller.moto', index=True)
     kilometraje_entrada = fields.Integer()
     fecha_entrada = fields.Date(default=fields.Date.today)
@@ -14,6 +14,18 @@ class Repair(models.Model):
     
     # Campos para ventas/facturación
     sale_order_id = fields.Many2one('sale.order', copy=False)
+    
+    # Campos para la firma
+    fecha_prevista_entrega = fields.Date(string="Fecha prevista de entrega")
+    cliente_firma = fields.Binary(string="Firma del cliente", attachment=True)
+    cliente_acepta_condiciones = fields.Boolean(
+        string="Acepta condiciones", 
+        default=False,
+        help="El cliente acepta las condiciones generales de la Orden de Trabajo"
+    )
+    solicita_presupuesto = fields.Boolean(string="Solicita presupuesto", default=False)
+    recoge_piezas = fields.Boolean(string="Recoge piezas sustituidas", default=False)
+    avisar_telefono = fields.Boolean(string="Avisar por teléfono", default=False)
     
     # Campo calculado para mostrar referencia con matrícula
     display_name = fields.Char(compute='_compute_display_name', store=True)
