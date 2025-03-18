@@ -1,0 +1,30 @@
+.wizard-step {
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.wizard-step h1 {
+    color: #4c4c4c;
+    font-size: 24px;
+}
+
+.wizard-step h4 {
+    color: #666;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 8px;
+}
+
+.card-header.bg-primary {
+    background-color: #00A09D !important;
+}
+
+.oe_avatar img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}

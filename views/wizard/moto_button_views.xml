@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Añadir botón para ingresar a reparación en la vista de moto -->
+    <record id="view_taller_moto_form_inherit_wizard" model="ir.ui.view">
+        <field name="name">taller.moto.form.inherit.wizard</field>
+        <field name="model">taller.moto</field>
+        <field name="inherit_id" ref="taller_motos.view_taller_moto_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_ingresar_reparacion" 
+                        type="object" 
+                        string="Ingresar a Reparación" 
+                        class="oe_highlight" 
+                        invisible="state == 'reparacion'"
+                        help="Iniciar proceso de ingreso a reparación"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

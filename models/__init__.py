@@ -1,6 +1,8 @@
+# models/__init__.py
 from . import partner
 from . import moto
 from . import repair
+from . import wizard
 
 def uninstall_hook(cr, registry):
     """

@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista formulario principal del wizard -->
+    <record id="view_taller_moto_ingresar_wizard_form" model="ir.ui.view">
+        <field name="name">taller.moto.ingresar.wizard.form</field>
+        <field name="model">taller.moto.ingresar.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Ingreso de moto a reparación">
+                <header>
+                    <!-- Indicador de progreso -->
+                    <field name="state" widget="statusbar" statusbar_visible="cliente,moto,fotos,sintomas,confirmacion"/>
+                </header>
+                <sheet>
+                    <!-- Etapa 1: Selección de Cliente -->
+                    <div class="wizard-step" invisible="state != 'cliente'">
+                        <h1 class="mb-3">Selección de Cliente</h1>
+                        <div class="o_horizontal_separator"/>
+                        
+                        <!-- Opciones de selección de cliente -->
+                        <div class="row mt-4 mb-4">
+                            <div class="col-12 mb-3">
+                                <field name="cliente_nuevo" widget="boolean_toggle"/>
+                                <label for="cliente_nuevo" class="ms-2">¿Cliente nuevo?</label>
+                            </div>
+                        </div>
+                        
+                        <!-- Cliente existente -->
+                        <div class="row" invisible="cliente_nuevo">
+                            <div class="col-12">
+                                <h4>Cliente existente</h4>
+                                <group>
+                                    <field name="partner_id" options="{'no_quick_create': True}" domain="[('customer_rank', '>', 0)]"/>
+                                </group>
+                                <div class="mt-4" invisible="not partner_id">
+                                    <div class="d-flex align-items-center">
+                                        <div class="fa fa-user me-2"/>
+                                        <field name="partner_name" readonly="1"/>
+                                    </div>
+                                    <div class="d-flex align-items-center mt-2" invisible="not partner_phone">
+                                        <div class="fa fa-phone me-2"/>
+                                        <field name="partner_phone" readonly="1"/>
+                                    </div>
+                                    <div class="d-flex align-items-center mt-2" invisible="not partner_email">
+                                        <div class="fa fa-envelope me-2"/>
+                                        <field name="partner_email" readonly="1"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Cliente nuevo -->
+                        <div invisible="not cliente_nuevo">
+                            <div class="alert alert-info" role="alert">
+                                <p><i class="fa fa-info-circle me-2"></i>Se abrirá un formulario para crear el cliente. Después regrese a este asistente.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Etapa 2: Datos de la Moto -->
+                    <div class="wizard-step" invisible="state != 'moto'">
+                        <h1 class="mb-3">Datos de la Moto</h1>
+                        <div class="o_horizontal_separator"/>
+                        
+                        <!-- Opciones de selección de moto -->
+                        <div class="row mt-4 mb-4">
+                            <div class="col-12 mb-3">
+                                <field name="moto_nueva" widget="boolean_toggle"/>
+                                <label for="moto_nueva" class="ms-2">¿Moto nueva?</label>
+                            </div>
+                        </div>
+                        
+                        <!-- Moto existente -->
+                        <div class="row" invisible="moto_nueva">
+                            <div class="col-12">
+                                <h4>Moto existente</h4>
+                                <group>
+                                    <field name="moto_id" options="{'no_create': True}" domain="[('cliente_id', '=', partner_id)]"/>
+                                </group>
+                                <div invisible="not moto_id">
+                                    <field name="kilometraje" string="Kilometraje actual" placeholder="Actualice si es necesario"/>
+                                    <field name="numero_llave" placeholder="Actualice si es necesario"/>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Moto nueva -->
+                        <div invisible="not moto_nueva">
+                            <h4>Registro de moto nueva</h4>
+                            <group>
+                                <group>
+                                    <field name="marca" required="moto_nueva"/>
+                                    <field name="modelo" required="moto_nueva"/>
+                                    <field name="matricula" required="moto_nueva"/>
+                                </group>
+                                <group>
+                                    <field name="chasis"/>
+                                    <field name="kilometraje"/>
+                                    <field name="numero_llave"/>
+                                </group>
+                            </group>
+                        </div>
+                    </div>
+                    
+                    <!-- Etapa 3: Documentación Fotográfica -->
+                    <div class="wizard-step" invisible="state != 'fotos'">
+                        <h1 class="mb-3">Documentación Fotográfica</h1>
+                        <div class="o_horizontal_separator"/>
+                        
+                        <div class="alert alert-info" role="alert">
+                            <p><i class="fa fa-info-circle me-2"></i>Capture fotos del estado actual de la moto para documentar su condición al ingreso.</p>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="o_group">
+                                    <div class="card mb-3">
+                                        <div class="card-header bg-primary text-white">
+                                            <span class="fa fa-camera me-2"/>Foto Frontal
+                                        </div>
+                                        <div class="card-body">
+                                            <field name="foto_frontal" widget="image" class="oe_avatar" options="{'size': [200, 200]}"/>
+                                            <field name="foto_frontal_name" invisible="1"/>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="card mb-3">
+                                        <div class="card-header bg-primary text-white">
+                                            <span class="fa fa-camera me-2"/>Lateral Izquierdo
+                                        </div>
+                                        <div class="card-body">
+                                            <field name="foto_lateral_izq" widget="image" class="oe_avatar" options="{'size': [200, 200]}"/>
+                                            <field name="foto_lateral_izq_name" invisible="1"/>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="card mb-3">
+                                        <div class="card-header bg-primary text-white">
+                                            <span class="fa fa-camera me-2"/>Lateral Derecho
+                                        </div>
+                                        <div class="card-body">
+                                            <field name="foto_lateral_der" widget="image" class="oe_avatar" options="{'size': [200, 200]}"/>
+                                            <field name="foto_lateral_der_name" invisible="1"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="o_group">
+                                    <div class="card mb-3">
+                                        <div class="card-header bg-primary text-white">
+                                            <span class="fa fa-camera me-2"/>Foto Trasera
+                                        </div>
+                                        <div class="card-body">
+                                            <field name="foto_trasera" widget="image" class="oe_avatar" options="{'size': [200, 200]}"/>
+                                            <field name="foto_trasera_name" invisible="1"/>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="card mb-3">
+                                        <div class="card-header bg-primary text-white">
+                                            <span class="fa fa-camera me-2"/>Tablero/Kilometraje
+                                        </div>
+                                        <div class="card-body">
+                                            <field name="foto_tablero" widget="image" class="oe_avatar" options="{'size': [200, 200]}"/>
+                                            <field name="foto_tablero_name" invisible="1"/>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="card mb-3">
+                                        <div class="card-header bg-primary text-white">
+                                            <span class="fa fa-camera me-2"/>Adicional (opcional)
+                                        </div>
+                                        <div class="card-body">
+                                            <field name="foto_adicional" widget="image" class="oe_avatar" options="{'size': [200, 200]}"/>
+                                            <field name="foto_adicional_name" invisible="1"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Etapa 4: Registro de Síntomas -->
+                    <div class="wizard-step" invisible="state != 'sintomas'">
+                        <h1 class="mb-3">Registro de Síntomas</h1>
+                        <div class="o_horizontal_separator"/>
+                        
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <h4>Detalles de la reparación</h4>
+                                <group>
+                                    <field name="sintomas" placeholder="Describa los síntomas o problemas reportados por el cliente..." required="1"/>
+                                </group>
+                                <group>
+                                    <field name="diagnostico_preliminar" placeholder="Diagnóstico técnico preliminar..."/>
+                                </group>
+                                <group>
+                                    <group>
+                                        <field name="fecha_prevista_entrega" required="1"/>
+                                        <field name="prioridad" widget="priority"/>
+                                    </group>
+                                    <group>
+                                        <field name="solicita_presupuesto"/>
+                                    </group>
+                                </group>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Etapa 5: Confirmación Final -->
+                    <div class="wizard-step" invisible="state != 'confirmacion'">
+                        <h1 class="mb-3">Confirmación Final</h1>
+                        <div class="o_horizontal_separator"/>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-4">
+                                <field name="imagen_seleccionada" widget="image" class="oe_avatar" options="{'size': [200, 200]}" readonly="1"/>
+                            </div>
+                            <div class="col-md-8">
+                                <h3><field name="nombre_proyecto" readonly="1"/></h3>
+                                <div class="mb-2">
+                                    <label for="partner_id" class="fw-bold me-2">Cliente:</label>
+                                    <field name="partner_name" readonly="1"/>
+                                </div>
+                                <div class="mb-2" invisible="not moto_id and not marca">
+                                    <span class="fw-bold me-2 o_form_label">Moto:</span>
+                                    <span invisible="not moto_id"><field name="moto_id" readonly="1"/></span>
+                                    <span invisible="not marca and not moto_id"><field name="marca"/> <field name="modelo"/></span>
+                                </div>
+                                <div class="mb-2" invisible="not matricula and not moto_id">
+                                    <span class="fw-bold me-2 o_form_label">Matrícula:</span>
+                                    <span invisible="not matricula"><field name="matricula" readonly="1"/></span>
+                                    <span invisible="not moto_matricula and not matricula"><field name="moto_matricula" readonly="1"/></span>
+                                </div>
+                                <div class="mb-2">
+                                    <span class="fw-bold me-2 o_form_label">Fecha prevista de entrega:</span>
+                                    <field name="fecha_prevista_entrega" readonly="1"/>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="o_horizontal_separator mt-3 mb-3"/>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header bg-primary text-white">
+                                        Opciones
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <field name="solicita_presupuesto" readonly="1"/>
+                                                <label for="solicita_presupuesto" class="ms-2">Solicita presupuesto</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <field name="recoge_piezas"/>
+                                                <label for="recoge_piezas" class="ms-2">Recoge piezas sustituidas</label>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-3">
+                                            <div class="col-md-6">
+                                                <field name="avisar_telefono"/>
+                                                <label for="avisar_telefono" class="ms-2">Avisar por teléfono</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-3">
+                                    <field name="cliente_acepta_condiciones" required="1"/>
+                                    <label for="cliente_acepta_condiciones" class="ms-2">Declaro haber leído, comprendido y aceptado las Condiciones Generales de la Orden de Trabajo y la cláusula de Protección de Datos</label>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header bg-primary text-white">
+                                        Firma del cliente
+                                    </div>
+                                    <div class="card-body">
+                                        <field name="cliente_firma" widget="signature" options="{'size': [0, 150]}" required="1"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </sheet>
+                <footer>
+                    <button string="Anterior" name="action_previous" type="object" invisible="state == 'cliente'" class="btn-secondary"/>
+                    <button string="Siguiente" name="action_next" type="object" invisible="state == 'confirmacion'" class="btn-primary"/>
+                    <button string="Crear cliente" name="action_next" type="object" invisible="not cliente_nuevo or state != 'cliente'" class="btn-primary"/>
+                    <button string="Confirmar" name="action_confirm" type="object" invisible="state != 'confirmacion'" class="btn-primary"/>
+                    <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Acción para abrir el wizard -->
+    <record id="action_taller_moto_ingresar_wizard" model="ir.actions.act_window">
+        <field name="name">Ingresar moto a reparación</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">taller.moto.ingresar.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    
+    <!-- Elemento de menú para el wizard -->
+    <menuitem id="menu_taller_moto_ingresar_wizard" 
+              name="Ingresar moto" 
+              parent="menu_taller_reparaciones" 
+              action="action_taller_moto_ingresar_wizard" 
+              sequence="5"/>
+</odoo>
