@@ -14,13 +14,14 @@ class MotoIngresarWizard(models.TransientModel):
     state = fields.Selection([
         ('cliente', 'Selección de Cliente'),
         ('moto', 'Datos de la Moto'),
-        ('fotos', 'Documentación Fotográfica'),
         ('sintomas', 'Registro de Síntomas'),
+        ('fotos', 'Documentación Fotográfica'),
         ('confirmacion', 'Confirmación Final')
     ], default='cliente', string='Etapa')
     
     # Campos para la etapa de cliente
-    partner_id = fields.Many2one('res.partner', string='Cliente', domain=[('customer_rank', '>', 0)])
+        # En models/wizard/moto_ingresar_wizard.py
+    partner_id = fields.Many2one('res.partner', string='Cliente')
     partner_name = fields.Char(string='Nombre', related='partner_id.name', readonly=True)
     partner_phone = fields.Char(string='Teléfono', related='partner_id.phone', readonly=True)
     partner_email = fields.Char(string='Email', related='partner_id.email', readonly=True)
@@ -105,7 +106,7 @@ class MotoIngresarWizard(models.TransientModel):
     
     def action_previous(self):
         """Retroceder a la etapa anterior"""
-        states = ['cliente', 'moto', 'fotos', 'sintomas', 'confirmacion']
+        states = ['cliente', 'moto', 'sintomas', 'fotos', 'confirmacion']
         current_index = states.index(self.state)
         
         if current_index > 0:
@@ -135,11 +136,11 @@ class MotoIngresarWizard(models.TransientModel):
         elif self.state == 'sintomas':
             if not self.sintomas:
                 raise UserError(_("Debe especificar los síntomas reportados por el cliente"))
-            if not self.fecha_prevista_entrega:
-                raise UserError(_("Debe especificar una fecha prevista de entrega"))
+            # if not self.fecha_prevista_entrega:
+            #    raise UserError(_("Debe especificar una fecha prevista de entrega"))
         
         # Avanzar a la siguiente etapa
-        states = ['cliente', 'moto', 'fotos', 'sintomas', 'confirmacion']
+        states = ['cliente', 'moto', 'sintomas', 'fotos', 'confirmacion']
         current_index = states.index(self.state)
         
         if current_index < len(states) - 1:
@@ -218,7 +219,7 @@ class MotoIngresarWizard(models.TransientModel):
             'solicita_presupuesto': self.solicita_presupuesto,
             'recoge_piezas': self.recoge_piezas,
             'avisar_telefono': self.avisar_telefono,
-            'priority': self.prioridad,
+            #'priority': self.prioridad,
         }
         
         repair_project = self.env['project.project'].create(project_vals)
@@ -280,6 +281,7 @@ class MotoIngresarWizard(models.TransientModel):
         # Obtener la etapa de 'Diagnóstico'
         diagnosis_stage = self.env.ref('taller_motos.repair_stage_diagnosis', False)
         stage_id = diagnosis_stage.id if diagnosis_stage else False
+
         
         # Crear la tarea
         task_vals = {
@@ -288,11 +290,12 @@ class MotoIngresarWizard(models.TransientModel):
             'stage_id': stage_id,
             'description': self.sintomas,
             'partner_id': self.partner_id.id,
-            'priority': self.prioridad,
+        #   'priority': self.prioridad,
             'date_deadline': self.fecha_prevista_entrega,
         }
         
-        return self.env['project.task'].create(task_vals)
+        return self.env['project.task'].sudo().create(task_vals)
+        
         
     def _reopen_view(self):
         """Volver a abrir la vista del wizard con el estado actualizado"""

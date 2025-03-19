@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_taller_moto_ingresar_wizard,taller.moto.ingresar.wizard,model_taller_moto_ingresar_wizard,base.group_user,1,1,1,1
+access_taller_moto_ingresar_wizard_all,taller.moto.ingresar.wizard.all,model_taller_moto_ingresar_wizard,base.group_user,1,1,1,1
+access_taller_moto_ingresar_wizard_manager,taller.moto.ingresar.wizard.manager,model_taller_moto_ingresar_wizard,base.group_system,1,1,1,1

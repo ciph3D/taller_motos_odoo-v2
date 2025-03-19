@@ -8,7 +8,7 @@
             <form string="Ingreso de moto a reparación">
                 <header>
                     <!-- Indicador de progreso -->
-                    <field name="state" widget="statusbar" statusbar_visible="cliente,moto,fotos,sintomas,confirmacion"/>
+                    <field name="state" widget="statusbar" statusbar_visible="cliente,moto,sintomas,fotos,confirmacion"/>
                 </header>
                 <sheet>
                     <!-- Etapa 1: Selección de Cliente -->
@@ -29,7 +29,8 @@
                             <div class="col-12">
                                 <h4>Cliente existente</h4>
                                 <group>
-                                    <field name="partner_id" options="{'no_quick_create': True}" domain="[('customer_rank', '>', 0)]"/>
+                                    <!-- En views/wizard/moto_ingresar_wizard_views.xml -->
+                                    <field name="partner_id" options="{'no_create_edit': False}" domain="[]"/>   
                                 </group>
                                 <div class="mt-4" invisible="not partner_id">
                                     <div class="d-flex align-items-center">
@@ -190,14 +191,14 @@
                             <div class="col-12">
                                 <h4>Detalles de la reparación</h4>
                                 <group>
-                                    <field name="sintomas" placeholder="Describa los síntomas o problemas reportados por el cliente..." required="1"/>
+                                    <field name="sintomas" placeholder="Describa los síntomas o problemas reportados por el cliente..."/>
                                 </group>
                                 <group>
                                     <field name="diagnostico_preliminar" placeholder="Diagnóstico técnico preliminar..."/>
                                 </group>
                                 <group>
                                     <group>
-                                        <field name="fecha_prevista_entrega" required="1"/>
+                                        <field name="fecha_prevista_entrega"/>
                                         <field name="prioridad" widget="priority"/>
                                     </group>
                                     <group>
@@ -280,7 +281,7 @@
                                         Firma del cliente
                                     </div>
                                     <div class="card-body">
-                                        <field name="cliente_firma" widget="signature" options="{'size': [0, 150]}" required="1"/>
+                                        <field name="cliente_firma" widget="signature" options="{'size': [0, 150]}"/>
                                     </div>
                                 </div>
                             </div>
