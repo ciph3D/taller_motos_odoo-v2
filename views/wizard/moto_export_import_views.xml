@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista para Exportación -->
+    <record id="view_taller_moto_export_wizard_form" model="ir.ui.view">
+        <field name="name">taller.moto.export.wizard.form</field>
+        <field name="model">taller.moto.export.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Exportar Motos">
+                <sheet>
+                    <group>
+                        <field name="export_file" filename="export_filename"/>
+                        <field name="export_filename" invisible="1"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Exportar" name="action_export_motos" type="object" class="btn-primary"/>
+                    <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vista para Importación -->
+    <record id="view_taller_moto_import_wizard_form" model="ir.ui.view">
+        <field name="name">taller.moto.import.wizard.form</field>
+        <field name="model">taller.moto.import.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Importar Motos">
+                <sheet>
+                    <group>
+                        <field name="import_file" filename="filename"/>
+                        <field name="filename" invisible="1"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Importar" name="action_import_motos" type="object" class="btn-primary"/>
+                    <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Acciones de Exportación e Importación -->
+    <record id="action_taller_moto_export_wizard" model="ir.actions.act_window">
+        <field name="name">Exportar Motos</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">taller.moto.export.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="action_taller_moto_import_wizard" model="ir.actions.act_window">
+        <field name="name">Importar Motos</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">taller.moto.import.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Menús -->
+    <menuitem id="menu_taller_moto_export" 
+              name="Exportar Motos" 
+              parent="menu_taller_motos" 
+              action="action_taller_moto_export_wizard" 
+              sequence="90"/>
+
+    <menuitem id="menu_taller_moto_import" 
+              name="Importar Motos" 
+              parent="menu_taller_motos" 
+              action="action_taller_moto_import_wizard" 
+              sequence="91"/>
+</odoo>

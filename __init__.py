@@ -1,4 +1,5 @@
 from .models import wizard
 
-# Descomentar cuando se necesite
-# from . import controllers
+def uninstall_hook(cr, registry):
+    from .models import uninstall_hook as hook
+    return hook(cr, registry)

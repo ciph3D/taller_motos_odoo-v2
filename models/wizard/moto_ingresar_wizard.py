@@ -232,20 +232,15 @@ class MotoIngresarWizard(models.TransientModel):
         
         # 5. Mostrar mensaje de confirmación y redirigir
         return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': _('Moto ingresada correctamente'),
-                'message': _(f'Se ha creado el proyecto de reparación {repair_project.name}'),
-                'sticky': False,
-                'next': {
-                    'type': 'ir.actions.act_window',
-                    'res_model': 'project.project',
-                    'res_id': repair_project.id,
-                    'view_mode': 'form',
-                },
+            'type': 'ir.actions.act_window',
+            'name': _('Proyecto de Reparación'),
+            'res_model': 'project.project',
+            'res_id': repair_project.id,
+            'view_mode': 'form',
+            'target': 'current',
+
             }
-        }
+        
         
     def _attach_photos_to_project(self, project):
         """Adjuntar las fotos tomadas al proyecto"""

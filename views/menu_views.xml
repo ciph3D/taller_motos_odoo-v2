@@ -16,6 +16,12 @@
               name="Reparaciones" 
               parent="menu_taller_root" 
               sequence="20"/>
+
+     <menuitem id="menu_taller_moto_ingresar_wizard" 
+              name="Ingresar moto" 
+              parent="menu_taller_reparaciones" 
+              action="action_taller_moto_ingresar_wizard" 
+              sequence="30"/>
     
     <!-- Entradas de menú para acciones -->
     <menuitem id="menu_taller_moto_action" 
@@ -36,4 +42,5 @@
               action="project.open_task_type_form" 
               sequence="90" 
               groups="base.group_no_one"/>
+
 </odoo>

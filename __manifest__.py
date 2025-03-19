@@ -28,6 +28,7 @@
         'views/wizard/moto_ingresar_wizard_views.xml',
         'views/wizard/moto_button_views.xml',
         'report/repair_reports.xml',
+        'views/wizard/moto_export_import_views.xml',
     ],
     'uninstall_hook': 'uninstall_hook',
     'application': True,

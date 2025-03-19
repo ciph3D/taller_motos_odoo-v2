@@ -4,11 +4,17 @@ from . import moto
 from . import repair
 from . import wizard
 
+# Añade esta línea para importar el nuevo wizard
+from .wizard import moto_export_import_wizard
+
 def uninstall_hook(cr, registry):
     """
     Preserve moto records by changing their model if the module is uninstalled
     """
     from odoo import api, SUPERUSER_ID
+    import logging
+
+    _logger = logging.getLogger(__name__)
 
     # Create a new environment with sudo privileges
     env = api.Environment(cr, SUPERUSER_ID, {})
@@ -31,7 +37,8 @@ def uninstall_hook(cr, registry):
                     fecha_compra DATE,
                     kilometraje FLOAT,
                     notas TEXT,
-                    state VARCHAR
+                    state VARCHAR,
+                    numero_llave VARCHAR
                 )
             """)
             
@@ -40,17 +47,21 @@ def uninstall_hook(cr, registry):
                 cr.execute("""
                     INSERT INTO preserved_motos 
                     (id, marca, modelo, matricula, chasis, cliente_id, 
-                     fecha_compra, kilometraje, notas, state)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                     fecha_compra, kilometraje, notas, state, numero_llave)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    ON CONFLICT (id) DO UPDATE SET
+                    marca = EXCLUDED.marca,
+                    modelo = EXCLUDED.modelo,
+                    matricula = EXCLUDED.matricula
                 """, (
                     moto.id, moto.marca, moto.modelo, moto.matricula, 
                     moto.chasis, moto.cliente_id.id, moto.fecha_compra, 
-                    moto.kilometraje, moto.notas, moto.state
+                    moto.kilometraje, moto.notas, moto.state, moto.numero_llave
                 ))
             
             cr.commit()
-            print("Moto records preserved successfully!")
+            _logger.info("Moto records preserved successfully!")
     except Exception as e:
-        print(f"Error preserving moto records: {e}")
+        _logger.error(f"Error preserving moto records: {e}")
     
     return True
