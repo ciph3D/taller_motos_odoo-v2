@@ -17,11 +17,11 @@
               parent="menu_taller_root" 
               sequence="20"/>
 
-     <menuitem id="menu_taller_moto_ingresar_wizard" 
+    <menuitem id="menu_taller_moto_ingresar_wizard" 
               name="Ingresar moto" 
-              parent="menu_taller_reparaciones" 
+              parent="menu_taller_root" 
               action="action_taller_moto_ingresar_wizard" 
-              sequence="30"/>
+              sequence="15"/>
     
     <!-- Entradas de menú para acciones -->
     <menuitem id="menu_taller_moto_action" 

@@ -1,5 +1,6 @@
 # models/__init__.py
 from . import partner
+from . import repair_line
 from . import moto
 from . import repair
 from . import wizard

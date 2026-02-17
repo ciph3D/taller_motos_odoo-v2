@@ -28,6 +28,6 @@ class MotoExtension(models.Model):
             'res_model': 'taller.moto.ingresar.wizard',
             'res_id': wizard.id,
             'view_mode': 'form',
-            'target': 'new',
+            'target': 'current',
             'context': {'form_view_initial_mode': 'edit'}
         }

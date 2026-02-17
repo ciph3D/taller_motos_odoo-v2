@@ -9,6 +9,10 @@
                 <header>
                     <!-- Indicador de progreso -->
                     <field name="state" widget="statusbar" statusbar_visible="cliente,moto,sintomas,fotos,confirmacion"/>
+                    <button string="Anterior" name="action_previous" type="object" invisible="state == 'cliente'" class="btn-secondary"/>
+                    <button string="Siguiente" name="action_next" type="object" invisible="state == 'confirmacion'" class="btn-primary"/>
+                    <button string="Confirmar" name="action_confirm" type="object" invisible="state != 'confirmacion'" class="btn-primary"/>
+                    <button string="Cancelar" class="btn-secondary" special="cancel"/>
                 </header>
                 <sheet>
                     <!-- Etapa 1: Selección de Cliente -->
@@ -49,11 +53,22 @@
                             </div>
                         </div>
                         
-                        <!-- Cliente nuevo -->
+                        <!-- Cliente nuevo: formulario inline -->
                         <div invisible="not cliente_nuevo">
-                            <div class="alert alert-info" role="alert">
-                                <p><i class="fa fa-info-circle me-2"></i>Se abrirá un formulario para crear el cliente. Después regrese a este asistente.</p>
-                            </div>
+                            <h4>Datos del nuevo cliente</h4>
+                            <group>
+                                <group>
+                                    <field name="nuevo_nombre" placeholder="Nombre o razón social"/>
+                                    <field name="nuevo_nif" placeholder="NIF/CIF"/>
+                                    <field name="nuevo_telefono" placeholder="Teléfono"/>
+                                    <field name="nuevo_email" placeholder="Email"/>
+                                </group>
+                                <group>
+                                    <field name="nuevo_street" placeholder="Dirección"/>
+                                    <field name="nuevo_city" placeholder="Población"/>
+                                    <field name="nuevo_zip" placeholder="Código Postal"/>
+                                </group>
+                            </group>
                         </div>
                     </div>
                     
@@ -289,13 +304,6 @@
                     </div>
                     
                 </sheet>
-                <footer>
-                    <button string="Anterior" name="action_previous" type="object" invisible="state == 'cliente'" class="btn-secondary"/>
-                    <button string="Siguiente" name="action_next" type="object" invisible="state == 'confirmacion'" class="btn-primary"/>
-                    <button string="Crear cliente" name="action_next" type="object" invisible="not cliente_nuevo or state != 'cliente'" class="btn-primary"/>
-                    <button string="Confirmar" name="action_confirm" type="object" invisible="state != 'confirmacion'" class="btn-primary"/>
-                    <button string="Cancelar" class="btn-secondary" special="cancel"/>
-                </footer>
             </form>
         </field>
     </record>
@@ -306,13 +314,13 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">taller.moto.ingresar.wizard</field>
         <field name="view_mode">form</field>
-        <field name="target">new</field>
+        <field name="target">current</field>
     </record>
     
-    <!-- Elemento de menú para el wizard -->
+    <!-- Elemento de menú para el wizard (al mismo nivel que Motos y Reparaciones) -->
     <menuitem id="menu_taller_moto_ingresar_wizard" 
               name="Ingresar moto" 
-              parent="menu_taller_reparaciones" 
+              parent="menu_taller_root" 
               action="action_taller_moto_ingresar_wizard" 
-              sequence="5"/>
+              sequence="15"/>
 </odoo>

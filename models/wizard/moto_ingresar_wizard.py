@@ -20,12 +20,19 @@ class MotoIngresarWizard(models.TransientModel):
     ], default='cliente', string='Etapa')
     
     # Campos para la etapa de cliente
-        # En models/wizard/moto_ingresar_wizard.py
     partner_id = fields.Many2one('res.partner', string='Cliente')
     partner_name = fields.Char(string='Nombre', related='partner_id.name', readonly=True)
     partner_phone = fields.Char(string='Teléfono', related='partner_id.phone', readonly=True)
     partner_email = fields.Char(string='Email', related='partner_id.email', readonly=True)
     cliente_nuevo = fields.Boolean(string='¿Cliente nuevo?')
+    # Campos para crear cliente inline (cuando cliente_nuevo es True)
+    nuevo_nombre = fields.Char(string='Nombre del cliente')  # obligatorio si cliente_nuevo
+    nuevo_telefono = fields.Char(string='Teléfono')
+    nuevo_email = fields.Char(string='Email')
+    nuevo_nif = fields.Char(string='NIF/CIF')
+    nuevo_street = fields.Char(string='Dirección')
+    nuevo_city = fields.Char(string='Población')
+    nuevo_zip = fields.Char(string='Código Postal')
     
     # Campos para la etapa de moto
     moto_id = fields.Many2one('taller.moto', string='Moto existente', domain="[('cliente_id', '=', partner_id)]")
@@ -121,7 +128,26 @@ class MotoIngresarWizard(models.TransientModel):
             if not self.partner_id and not self.cliente_nuevo:
                 raise UserError(_("Debe seleccionar un cliente existente o marcar 'Cliente nuevo'"))
             if self.cliente_nuevo:
-                return self._action_create_customer()
+                if not (self.nuevo_nombre or '').strip():
+                    raise UserError(_("El nombre del cliente es obligatorio"))
+                partner_vals = {
+                    'name': self.nuevo_nombre.strip(),
+                    'customer_rank': 1,
+                }
+                if self.nuevo_telefono:
+                    partner_vals['phone'] = self.nuevo_telefono
+                if self.nuevo_email:
+                    partner_vals['email'] = self.nuevo_email
+                if self.nuevo_nif:
+                    partner_vals['vat'] = self.nuevo_nif
+                if self.nuevo_street:
+                    partner_vals['street'] = self.nuevo_street
+                if self.nuevo_city:
+                    partner_vals['city'] = self.nuevo_city
+                if self.nuevo_zip:
+                    partner_vals['zip'] = self.nuevo_zip
+                partner = self.env['res.partner'].with_context(no_wizard_redirect=True).create(partner_vals)
+                self.partner_id = partner
                 
         elif self.state == 'moto':
             if not self.moto_id and not self.moto_nueva:
@@ -147,22 +173,6 @@ class MotoIngresarWizard(models.TransientModel):
             self.state = states[current_index + 1]
         
         return self._reopen_view()
-    
-    def _action_create_customer(self):
-        """Abrir formulario para crear un nuevo cliente"""
-        # Crear acción para abrir formulario de cliente
-        action = {
-            'name': _('Nuevo Cliente'),
-            'type': 'ir.actions.act_window',
-            'res_model': 'res.partner',
-            'view_mode': 'form',
-            'target': 'new',
-            'context': {
-                'default_customer_rank': 1,
-                'default_taller_wizard_active': True,
-            },
-        }
-        return action
     
     def action_confirm(self):
         """Confirmar y crear los registros necesarios"""
@@ -268,7 +278,8 @@ class MotoIngresarWizard(models.TransientModel):
                 })
                 attachments.append(attachment.id)
         
-        # Actualizar el proyecto con la referencia a los adjuntos si es necesario
+        if attachments:
+            project.write({'foto_ids': [(6, 0, attachments)]})
         return attachments
     
     def _create_initial_task(self, project):
@@ -299,5 +310,5 @@ class MotoIngresarWizard(models.TransientModel):
             'res_model': self._name,
             'res_id': self.id,
             'view_mode': 'form',
-            'target': 'new',
+            'target': 'current',
         }

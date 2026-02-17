@@ -1,7 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Extensión de vistas para project.project (reparaciones) -->
-    
+    <!-- Vista tree para líneas de reparación (modelo project.project.line) -->
+    <record id="view_repair_line_tree" model="ir.ui.view">
+        <field name="name">project.project.line.tree</field>
+        <field name="model">project.project.line</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="project_id" column_invisible="1"/>
+                <field name="product_id" options="{'no_create': True}"/>
+                <field name="name"/>
+                <field name="quantity"/>
+                <field name="product_uom_id"/>
+                <field name="price_unit"/>
+                <field name="discount"/>
+                <field name="tax_ids" widget="many2many_tags"/>
+                <field name="price_subtotal" readonly="1"/>
+            </list>
+        </field>
+    </record>
+
     <!-- Formulario de proyecto extendido para reparaciones -->
     <record id="view_project_form_inherit_repair" model="ir.ui.view">
         <field name="name">project.project.form.inherit.repair</field>
@@ -42,20 +59,12 @@
                             <field name="sale_order_id" readonly="1"/>
                         </group>
                     </group>
-                    <notebook>
-                        <page string="Síntomas" name="symptoms">
-                            <field name="sintomas" placeholder="Describa los síntomas reportados por el cliente..."/>
-                        </page>
-                        <page string="Diagnóstico" name="diagnosis">
-                            <field name="diagnostico" placeholder="Registre el diagnóstico técnico..."/>
-                        </page>
-                        <page string="Trabajo Realizado" name="work_done">
-                            <field name="trabajo_realizado" placeholder="Describa el trabajo realizado..."/>
-                        </page>
-                    </notebook>
                 </page>
                 <!-- Nueva página para la firma -->
                 <page string="Aceptación y firma" name="signature">
+                    <separator string="Documentación Fotográfica"/>
+                    <field name="foto_ids" widget="many2many_binary" class="oe_inline" nolabel="1"/>
+                    <separator/>
                     <div class="row">
                         <div class="col-md-6">
                             <group>
@@ -87,6 +96,23 @@
                             </group>
                         </div>
                     </div>
+                </page>
+                <!-- Páginas de síntomas, diagnóstico y trabajo realizado (mismo nivel que el notebook principal) -->
+                <page string="Síntomas" name="symptoms">
+                    <field name="sintomas" placeholder="Describa los síntomas reportados por el cliente..."/>
+                </page>
+                <page string="Diagnóstico" name="diagnosis">
+                    <field name="diagnostico" placeholder="Registre el diagnóstico técnico..."/>
+                </page>
+                <page string="Trabajo y Facturación" name="work_done">
+                    <field name="trabajo_realizado" placeholder="Notas del trabajo..."/>
+                    <field name="repair_line_ids" nolabel="1" context="{'list_view_ref': 'taller_motos.view_repair_line_tree'}"/>
+                    <group class="oe_subtotal_footer">
+                        <field name="amount_untaxed" readonly="1" string="Base imponible"/>
+                        <field name="amount_tax" readonly="1" string="Impuestos"/>
+                        <field name="amount_total" readonly="1" string="Total" class="oe_subtotal_footer_separator"/>
+                    </group>
+                    <button name="action_create_sale_order" type="object" class="btn-primary" icon="fa-file-text" string="Crear Presupuesto" invisible="not repair_line_ids"/>
                 </page>
             </xpath>
         </field>
